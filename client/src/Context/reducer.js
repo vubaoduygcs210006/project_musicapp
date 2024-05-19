@@ -12,6 +12,9 @@ export const actionType = {
   SET_SONG: "SET_SONG",
   SET_SONG_PLAYING: "SET_SONG_PLAYING",
   SET_MINI_PLAYER: "SET_MINI_PLAYER",
+
+  REMOVE_ARTIST: "REMOVE_ARTIST",
+  REMOVE_ALBUM: "REMOVE_ALBUM",
 };
 
 const reducer = (state, action) => {
@@ -22,6 +25,18 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: action.user,
+      };
+
+      case actionType.REMOVE_ALBUM:
+      return {
+        ...state,
+        allAlbums: state.allAlbums.filter(album => album._id !== action.id)
+      };
+
+    case actionType.REMOVE_ARTIST:
+      return {
+        ...state,
+        artists: state.artists.filter(artist => artist._id !== action.id)
       };
 
     case actionType.SET_SEARCH_TERM:

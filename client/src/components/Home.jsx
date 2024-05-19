@@ -54,7 +54,7 @@ const Home = () => {
           data.artist.toLowerCase().includes(searchTerm) ||
           data.language.toLowerCase().includes(searchTerm) ||
           data.name.toLowerCase().includes(searchTerm) ||
-          data.artist.includes(artistFilter)
+          data.artist.toLowerCase().includes(artistFilter)
       );
       setFilteredSongs(filtered);
     } else {
@@ -73,7 +73,7 @@ const Home = () => {
 
   useEffect(() => {
     const filtered = allSongs?.filter(
-      (data) => data.category.toLowerCase() === filterTerm
+      (data) => data.category.toLowerCase() === filterTerm.toLowerCase()
     );
     if (filtered) {
       setFilteredSongs(filtered);

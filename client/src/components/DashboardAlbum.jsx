@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { MdDelete } from "react-icons/md";
 import { actionType } from "../Context/reducer";
 import { getAllAlbums } from "../api";
+import axios from "axios";
 
 const DashboardAlbum = () => {
   const [{ allAlbums }, dispatch] = useStateValue();
@@ -15,13 +16,28 @@ const DashboardAlbum = () => {
       });
     }
   }, []);
+
+  const onDelete = (id) => {
+    const baseURL = "http://localhost:4000/";
+    axios
+    .delete(`${baseURL}api/albums/delete/${id}`)
+    .then(response => {
+      if (response.status === 200) {
+        dispatch({ type: actionType.REMOVE_ALBUM, id });
+      }
+    })
+    .catch(error => {
+      console.error('Error deleting artist:', error);
+    });
+  }
+
   return (
     <div className="w-full p-4 flex items-center justify-center flex-col">
       <div className="relative w-full gap-3  my-4 p-4 py-12 border border-gray-300 rounded-md flex flex-wrap justify-evenly">
         {allAlbums &&
           allAlbums.map((data, index) => (
             <>
-              <AlbumCard key={index} data={data} index={index} />
+              <AlbumCard key={index} data={data} index={index} onDelete={onDelete} />
             </>
           ))}
       </div>
@@ -29,7 +45,7 @@ const DashboardAlbum = () => {
   );
 };
 
-export const AlbumCard = ({ data, index }) => {
+export const AlbumCard = ({ data, index, onDelete }) => {
   const [isDelete, setIsDelete] = useState(false);
   return (
     <motion.div
@@ -66,7 +82,7 @@ export const AlbumCard = ({ data, index }) => {
           </p>
           <div className="flex items-center w-full justify-center gap-3">
             <div className="bg-red-300 px-3 rounded-md">
-              <p className="text-headingColor text-sm">Yes</p>
+              <p className="text-headingColor text-sm" onClick={() => onDelete(data._id)}>Yes</p>
             </div>
             <div
               className="bg-green-300 px-3 rounded-md"

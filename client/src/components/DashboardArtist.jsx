@@ -7,6 +7,7 @@ import { IoLogoInstagram, IoLogoTwitter } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { getAllArtist } from "../api";
 import { actionType } from "../Context/reducer";
+import axios from "axios";
 
 const DashboardArtist = () => {
   const [{ artists }, dispatch] = useStateValue();
@@ -19,13 +20,27 @@ const DashboardArtist = () => {
     }
   }, []);
 
+  const onDelete = (id) => {
+    const baseURL = "http://localhost:4000/";
+    axios
+    .delete(`${baseURL}api/artists/delete/${id}`)
+    .then(response => {
+      if (response.status === 200) {
+        dispatch({ type: actionType.REMOVE_ARTIST, id });
+      }
+    })
+    .catch(error => {
+      console.error('Error deleting artist:', error);
+    })
+  };
+
   return (
     <div className="w-full p-4 flex items-center justify-center flex-col">
       <div className="relative w-full gap-3  my-4 p-4 py-12 border border-gray-300 rounded-md flex flex-wrap justify-evenly">
         {artists &&
           artists.map((data, index) => (
             <>
-              <ArtistCard key={index} data={data} index={index} />
+              <ArtistCard key={index} data={data} index={index} onDelete={onDelete} />
             </>
           ))}
       </div>
@@ -33,7 +48,7 @@ const DashboardArtist = () => {
   );
 };
 
-export const ArtistCard = ({ data, index }) => {
+export const ArtistCard = ({ data, index, onDelete }) => {
   const [isDelete, setIsDelete] = useState(false);
   return (
     <motion.div
@@ -81,7 +96,7 @@ export const ArtistCard = ({ data, index }) => {
           </p>
           <div className="flex items-center w-full justify-center gap-3">
             <div className="bg-red-300 px-3 rounded-md">
-              <p className="text-headingColor text-sm">Yes</p>
+              <p className="text-headingColor text-sm" onClick={() => onDelete(data._id)}>Yes</p>
             </div>
             <div
               className="bg-green-300 px-3 rounded-md"
